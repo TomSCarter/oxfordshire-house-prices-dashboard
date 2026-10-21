@@ -18,3 +18,21 @@
     - Category B will be excluded from price, £/m² and volume charts. They will be labelled as depicting standard market sales only.
 - Sales volume in 2025 does not drop in later months (ca. 800 sales in a typical month), but does spike in March (ca. 1600) and drop sharply in April (ca. 400)
     - Likely linked to the stamp duty change in April 2025, confirm year and annotate on volume chart.
+
+## Faceting exercise
+How does £ per sqm floor_area vary between districts? Where is space cheapest?
+- One panel per property_type, districts compared within each panel
+
+- Data preparation
+    - Category A only
+    - Using property_subtype, the property type from the Land Registry dataset.
+        - As it is recorded with the sale it decribes the property most accurately on sale day
+        - Its complete for every sale and is standard in house statistics, rather than the split used in the EPCs (e.g. maisonette, bungalow etc)
+    - Time period
+        - Prices over 2015-2025 have changed significantly
+        - Using 2023-2025 to give most relevant period for a property investor
+        - 339 to 2419 sales per district/property_subtype category
+    - £/m2 outliers
+        - Looking at > £25,000 /m2 there are many 1 room properties and also small cottages with massive sale prices (perhaps price was matched with an annexe due to the known address subset issue)
+        - Need to set thresholds on reasonable m2 per habitable room
+            - Total floor area includes all rooms but number_habitable_rooms does not include kitchen, bathroom etc. So this value will be well above the houses smallest room
