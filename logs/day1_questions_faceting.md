@@ -27,15 +27,19 @@ How does £ per sqm floor_area vary between districts? Where is space cheapest?
     - Category A only
     - Using property_subtype, the property type from the Land Registry dataset.
         - As it is recorded with the sale it describes the property most accurately on sale day
-        - Its complete for every sale and is standard in house statistics, rather than the split used in the EPCs (e.g. maisonette, bungalow etc)
+        - It's complete for every sale and is standard in house statistics, rather than the split used in the EPCs (e.g. maisonette, bungalow etc)
     - Time period
         - Prices over 2015-2025 have changed significantly
         - Using 2023-2025 to give most relevant period for a property investor
         - 339 to 2419 sales per district/property_subtype category
     - £/m2 outliers
-        - Looking at > £25,000 /m2 there are many 1 room properties and also massive sale prices with small floor areas (perhaps price was matched with an annex due to the known address subset issue)
+        - Looking at > £25,000 /m2 there are many 1 room properties and also massive sale prices with small floor areas (perhaps matched with an annex due to the known address subset issue)
         - Looking into setting thresholds on reasonable m2 per habitable room
             - Total floor area includes all rooms but number_habitable_rooms does not include kitchen, bathroom etc. So this value will be well above the houses smallest room
             - Difficult to decide non-arbitrary thresholds. Filtering on m2/habitable_room >=10 and < 200 removed about 100 sales. Not a large set, better dealt with in the pipeline during matching.
             - Excluding sales with > £20,000/m2 makes a negligible change to median values.
         - Decision: No filter applied. Outlier markers hidden, boxes and whiskers use all data. Log possible annex matching as pipeline issue.
+- Plotting
+    - Panels share a similar range on y-axis, so no reason to use independent axes. Shared axis helps make accurate comparisons between panels
+    - Replaced property_subtype codes with full names
+    - Ordered districts by median £/m2
