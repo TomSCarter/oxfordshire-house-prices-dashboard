@@ -1,5 +1,6 @@
 # Oxfordshire house prices dashboard - Day 2 log - visualization
 
+## Reading
 Wilke's Fundamentals of Data Visualization [Free online](https://clauswilke.com/dataviz/)
 - Skim "Balance the data and the context," "Titles, captions, and tables," "Redundant coding," and "Use larger axis labels."
     - Balance the data and the context
@@ -18,5 +19,25 @@ Wilke's Fundamentals of Data Visualization [Free online](https://clauswilke.com/
         - Use larger axis labels
             - defaults are always too small
             - can be too big if out of balance with other elements (e.g. markers)
+
+## Chart 1
+### Before 
+- Box plot from day 1
+
+![Chart 1 - Before](figures/chart_1_before.png)
+
+### After
+
+![Chart 1 - After](figures/chart_1_after.png)
+
+Changes:
+- Horizontal layout easier to read
+- Changed to a pointplot to allow easier comparison between districts, rather than vertical panels
+- Error bars not used as headline is Oxford vs Cherwell, they confuse the message
+- Sorted districts by median
+- Reordered property types to put all houses together, from largest to smallest type
+- Changed m2 to m²
+- Key finding in headline
+
 
 
