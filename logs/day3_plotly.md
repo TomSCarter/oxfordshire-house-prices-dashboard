@@ -21,3 +21,8 @@ Replotting graphs using Plotly express
     - A typo in category_order silently stopped it working. Plotly doesnt warn about mis-matched keys
     - Changed hover_data to custom_data to solidify the indexes used in the tooltip
     - The overlapping dots in South Oxfordshire can't be separated with dodge, as in Seaborn, but they are distinguished by the tooltip
+
+    
+![Chart 1 - Plotly](figures/chart_1_plotly.png)
+
+## Chart 2
