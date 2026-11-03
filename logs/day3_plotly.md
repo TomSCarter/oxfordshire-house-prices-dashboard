@@ -22,7 +22,17 @@ Replotting graphs using Plotly express
     - Changed hover_data to custom_data to solidify the indexes used in the tooltip
     - The overlapping dots in South Oxfordshire can't be separated with dodge, as in Seaborn, but they are distinguished by the tooltip
 
-    
+
 ![Chart 1 - Plotly](figures/chart_1_plotly.png)
 
 ## Chart 2
+- Reused monthly sales table from previous Chart 2 (resampled)
+- Copied over formatting from Chart 1 above (template used, font sizes)
+- Added Title and subtitle previously written
+- X-axis: No title needed, added extra ticks to give 1 per year but only labels every 2 years to reduce clutter. Kept vertical grid lines as they are helpful in judging dates on trace, though redundant with tooltip. Set range to 2015-2026, to show 2026 end label.
+- Y-axis: Set limits to 0 to 2500 as before. Given clear label 'Monthly number of sales'. Horizontal gridlines kept to help read Y axis.
+- Tooltip: Bold date (Month year) with explicit format (to keep at any zoom level), and number of sales with no extra floating label
+- Annotations added, y offset increased to put text above trace rather than overlapping. Y values are hardcoded, so will need to be checked if data is changed/updated
+- Zoom controls left on, as could be useful for extracting a segment of the chart. Revisit when zoom slider is introduced in future training session.
+
+![Chart 2 - Plotly](figures/chart_2_plotly.png)
