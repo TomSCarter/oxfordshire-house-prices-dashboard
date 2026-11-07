@@ -4,6 +4,7 @@ from pathlib import Path
 # SETTINGS
 DATA_FILE = "data/pp_epc_oxfordshire_2015_2025_v2.parquet"
 OUT_PATH = "data/aggregated/"
+RECENT_YEARS = [2023, 2024, 2025]
 
 # LOAD FUNCTION
 
@@ -11,28 +12,80 @@ def load_data(data_file):
     """Reads parquet of merged cleaned data"""
 
     file_in = Path(data_file)
+    if not file_in.exists():
+        raise FileNotFoundError(f"No file found at {data_file}")
+    raw_data = pd.read_parquet(file_in)
+    return raw_data
 
 
 # PREPARE DATA FUNCTION
-def prepare_data():
-    """Prepares the base table of data with filters that apply to both downstream aggregated tables"""
+def prepare_data(raw_data):
+    """Prepares the base table of data with filters that apply to all downstream aggregated tables"""
+
+    cat_a_only = raw_data[raw_data['transaction_category'] == 'A'].copy()
+    cat_a_only['£/m2'] = cat_a_only['price_paid'] / cat_a_only['total_floor_area']
+
+    labels = {'F': 'Flat', 'T': 'Terraced', 'S': 'Semi-detached', 'D': 'Detached'}
+    cat_a_only['property_subtype'] = cat_a_only['property_subtype'].replace(labels)
+    cat_a_only['district'] = cat_a_only['district'].str.title().str.replace('Of', 'of')
+
+    return cat_a_only
 
 # AGGREGATED MEDIAN PRICE BY DISTRICT TABLE
-def price_district_table():
+def price_district_table(cat_a_only):
     """Prepares the aggregated table with median £ per m2 by district and property type"""
+    
+    recent_years = cat_a_only[cat_a_only['year'].isin(RECENT_YEARS)].copy()
+
+    recent_years_agg = recent_years.groupby(['district', 'property_subtype'])['£/m2'].agg(['median', 'count']).reset_index()
+    recent_years_agg = recent_years_agg.rename(columns = {'property_subtype':'property_type', 'median':'£_per_m²'})
+    recent_years_agg['£_per_m²'] = round(recent_years_agg['£_per_m²'], 2)
+
+    order = ['Detached', 'Semi-detached', 'Terraced', 'Flat']
+
+    recent_years_agg['property_type'] = pd.Categorical(
+        recent_years_agg['property_type'],
+        categories=order,
+        ordered=True
+    )
+
+    recent_years_agg = recent_years_agg.sort_values(['district', 'property_type']).reset_index(drop=True)
+    return recent_years_agg
 
 # AGGREGATED MEDIAN PRICE AND VOLUME TABLE
-def median_volume_table():
+def median_volume_table(cat_a_only):
     """Prepares the aggregated median £ per m2 and sales volume per month table"""
 
+    med_vol_table = cat_a_only.resample('MS', on='deed_date')[['unique_id', '£/m2']].agg({'unique_id':'count', '£/m2':'median'}).rename(columns={'unique_id':'monthly_sales_count', '£/m2':'median_£_per_m2'})
+    return med_vol_table
 
 # SAVE OUTPUT
-def save_output(out_path, out_name):
+def save_output(df, out_path, out_name):
     """Checks for licensing restricted columns then saves the final table as parquet"""
-
+    not_allowed = ['unique_id', 'address', 'saon', 'paon', 'street', 'postcode', 'uprn']
+    cols = df.columns
+    if any(cols.isin(not_allowed)):
+        raise ValueError(f"Columns in {out_name} contain address items restricted by licensing")
+    folder = Path(out_path)
+    folder.mkdir(exist_ok=True, parents=True)
+    file_out = folder / out_name
+    df.to_parquet(file_out)
 
 # MAIN()
 def main():
+    raw_df = load_data(DATA_FILE)
+    cat_a_only = prepare_data(raw_df)
+
+    recent_years_agg = price_district_table(cat_a_only)
+    save_output(recent_years_agg, OUT_PATH, 'price_district_table.parquet')
+    print(f"Saved aggregated median price by district table, shape: {recent_years_agg.shape}")
+    print(recent_years_agg)
+
+    med_vol_table = median_volume_table(cat_a_only)
+    save_output(med_vol_table, OUT_PATH, 'median_volume_table.parquet')
+    print(f"Saved aggregated median price and volume table, shape: {med_vol_table.shape}")
+    print(med_vol_table)
+    
 
 # STANDARD GUARD
 if __name__ == "__main__":
