@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 
 # SETTINGS
-DATA_FILE = "data/pp_epc_oxfordshire_2015_2025_v2.parquet"
+DATA_FILE = "data/raw/pp_epc_oxfordshire_2015_2025_v2.parquet"
 OUT_PATH = "data/aggregated/"
 RECENT_YEARS = [2023, 2024, 2025]
 
