@@ -46,6 +46,7 @@ def chart_1(PRICE_DISTRICT_TABLE):
                     font_size=FONT_SIZE)
     fig.update_traces(marker_size=12,
                     hovertemplate='<b>%{customdata[0]}, %{y}</b><br>Median £%{x:,.0f} per m²<br>%{customdata[1]} sales<extra></extra>')
+    return fig
 
 
 
@@ -64,29 +65,15 @@ def chart_2(MEDIAN_VOLUME_TABLE):
                     rangeslider_visible=True)
     fig.update_yaxes(title_text="Monthly number of sales", 
                     range=[0, 2500])
-    fig.add_annotation(x='2016-03-01', 
-                    y=1250,
-                    text="Additional property<br>surcharge introduced",
-                    showarrow=True,
-                    arrowhead=1,
-                    ay=-50)
-    fig.add_annotation(x='2020-04-01', 
-                    y=600,
-                    text="COVID-19 lockdown",
-                    showarrow=True,
-                    arrowhead=1,
-                    ay=-100)
-    fig.add_annotation(x='2021-06-01', 
-                    y=1900,
-                    text="Stamp duty holiday deadlines",
-                    showarrow=True,
-                    arrowhead=1,
-                    ay=-75)
-    fig.add_annotation(x='2025-03-01', 
-                    y=1500,
-                    text="Thresholds reduced",
-                    showarrow=True,
-                    arrowhead=1)
+
+    for i in ANNOTATIONS:
+        fig.add_annotation(x=ANNOTATIONS[i][0], 
+                        y=ANNOTATIONS[i][1],
+                        text=ANNOTATIONS[i][2],
+                        showarrow=True,
+                        arrowhead=1,
+                        ay=ANNOTATIONS[i][3])
+
     fig.update_layout(title_text='Tax changes shift sales earlier',
                     title_subtitle_text='Standard market sales (cat. A) per month, Oxfordshire, 2015–2025',
                     title_font_size=TITLE_FONT_SIZE,
@@ -126,3 +113,5 @@ def chart_2(MEDIAN_VOLUME_TABLE):
         direction='down',
         x=1, xanchor='right', y=1.15, yanchor='top'
     )])
+
+    return fig
