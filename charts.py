@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 TEMPLATE = 'plotly_white'
 TITLE_FONT_SIZE = 22
 FONT_SIZE = 18
-# proprety type color mapping
+COLOR_PALETTE = px.colors.qualitative.Safe
 PRICE_LINE_COLOR ='orange'
 VOLUME_LINE_COLOR = '#1f77b4'
 HIDE_BAR = {'displayModeBar': False}
@@ -34,7 +34,7 @@ def district_price_chart(df):
             template= TEMPLATE,
             labels={'count':'Number of sales', 'property_type':'Property type', 'district':'District', '£_per_m²': '£ per m²'},
             custom_data=['property_type', 'count'],
-            color_discrete_sequence=px.colors.qualitative.Safe)
+            color_discrete_sequence=COLOR_PALETTE)
     fig.update_xaxes(title_text='Median price per m² floor area', tickprefix='£', tickformat=',')
     fig.update_yaxes(title_text=None, showgrid=False)
     fig.update_layout(title_text='Oxford city is the most expensive district per m² for every property type',
