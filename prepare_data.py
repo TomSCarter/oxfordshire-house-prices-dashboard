@@ -65,6 +65,14 @@ def median_volume_table(cat_a_only):
     med_vol_table = med_vol_table.rename(columns={'unique_id':'monthly_sales_count', '£/m2':'median_£_per_m2'}).reset_index()
     return med_vol_table
 
+# YEARLY MEDIAN PRICE TABLE
+def yearly_median_table(cat_a_only):
+    """Generates a table of yearly median £ per m2 floor area and sales volume"""
+    yearly_table = cat_a_only.resample('YS', on='deed_date')[['unique_id', '£/m2']].agg({'unique_id':'count', '£/m2':'median'})
+    yearly_table = yearly_table.rename(columns={'unique_id':'monthly_sales_count', '£/m2':'median_£_per_m2'}).reset_index()
+    yearly_table['median_£_per_m2'] = round(yearly_table['median_£_per_m2'], 2)
+    return yearly_table
+
 # SAVE OUTPUT
 def save_output(df, out_path, out_name):
     """Checks for licensing restricted columns then saves the final table as parquet"""
@@ -91,7 +99,11 @@ def main():
     save_output(med_vol_table, OUT_PATH, 'median_volume_table.parquet')
     print(f"Saved aggregated median price and volume table, shape: {med_vol_table.shape}")
     print(med_vol_table)
-    
+
+    yearly_table = yearly_median_table(cat_a_only)
+    save_output(yearly_table, OUT_PATH, 'yearly_median_table.parquet')
+    print(f"Saved aggregated yearly median price and volume table, shape: {yearly_table.shape}")
+    print(yearly_table)  
 
 # STANDARD GUARD
 if __name__ == "__main__":
