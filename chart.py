@@ -2,10 +2,6 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-# DATA SOURCES
-MEDIAN_VOLUME_TABLE = 'data/aggregated/median_volume_table.parquet'
-PRICE_DISTRICT_TABLE = 'data/aggregated/price_district_table.parquet'
-
 # SHARED STYLE SETTINGS
 
 TEMPLATE = 'plotly_white'
@@ -14,19 +10,18 @@ FONT_SIZE = 18
 # proprety type color mapping
 PRICE_LINE_COLOR ='orange'
 VOLUME_LINE_COLOR = 'blue'
-HIDE_BAR = [config={'displayModeBar': False}]
+HIDE_BAR = {'displayModeBar': False}
 
 # ANNOTATIONS
 
 ANNOTATIONS = [['2016-03-01', 
 1250, "Additional property<br>surcharge introduced", -50],
-['2020-04-01', 600, "COVID-19 lockdown", -100]
+['2020-04-01', 600, "COVID-19 lockdown", -100],
 ['2021-06-01', 1900, "Stamp duty holiday deadlines", -75],
 ['2025-03-01', 1500, "Thresholds reduced", 0]]
 
 # CHART 1
-def chart_1(PRICE_DISTRICT_TABLE):
-    df = PRICE_DISTRICT_TABLE
+def chart_1(df):
     fig = px.scatter(df, 
             x= '£_per_m²', 
             y='district', 
@@ -51,13 +46,12 @@ def chart_1(PRICE_DISTRICT_TABLE):
 
 
 # CHART 2
-def chart_2(MEDIAN_VOLUME_TABLE):
-    df = MEDIAN_VOLUME_TABLE
+def chart_2(df):
     fig = px.line(df, 
             template=TEMPLATE,
             x = df.index,
-            y = 'monthly_sales_count'
-            labels={'monthly_sales_count':'Monthly number of sales'}, line_color = VOLUME_LINE_COLOR)
+            y = 'monthly_sales_count',
+            labels={'monthly_sales_count':'Monthly number of sales'})
     fig.update_xaxes(title_text=None, 
                     nticks=20, 
                     ticklabelstep=2, 
@@ -66,13 +60,13 @@ def chart_2(MEDIAN_VOLUME_TABLE):
     fig.update_yaxes(title_text="Monthly number of sales", 
                     range=[0, 2500])
 
-    for i in ANNOTATIONS:
-        fig.add_annotation(x=ANNOTATIONS[i][0], 
-                        y=ANNOTATIONS[i][1],
-                        text=ANNOTATIONS[i][2],
+    for x_val, y_val, text_val, ay_val in ANNOTATIONS:
+        fig.add_annotation(x=x_val, 
+                        y=y_val,
+                        text=text_val,
                         showarrow=True,
                         arrowhead=1,
-                        ay=ANNOTATIONS[i][3])
+                        ay=ay_val)
 
     fig.update_layout(title_text='Tax changes shift sales earlier',
                     title_subtitle_text='Standard market sales (cat. A) per month, Oxfordshire, 2015–2025',
@@ -80,9 +74,9 @@ def chart_2(MEDIAN_VOLUME_TABLE):
                     font_size=FONT_SIZE,
                     showlegend=False,
                     margin_t=100)
-    fig.update_traces(hovertemplate='%{x|<b>%b %Y</b>}<br>Number of sales: %{y}<extra></extra>')
+    fig.update_traces(hovertemplate='%{x|<b>%b %Y</b>}<br>Number of sales: %{y}<extra></extra>', line_color = VOLUME_LINE_COLOR)
     fig.add_trace(go.Scatter(x=df.index, 
-                            y='median_£_per_m2', 
+                            y=df['median_£_per_m2'], 
                             name='median £ per m2', 
                             mode='lines', 
                             line_color= PRICE_LINE_COLOR, 
