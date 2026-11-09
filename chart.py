@@ -77,7 +77,7 @@ def volume_price_chart(df):
                     showlegend=False,
                     margin_t=100)
     fig.update_traces(hovertemplate='%{x|<b>%b %Y</b>}<br>Number of sales: %{y}<extra></extra>', line_color = VOLUME_LINE_COLOR)
-    fig.add_trace(go.Scatter(x=df.index, 
+    fig.add_trace(go.Scatter(x=df['deed_date'], 
                             y=df['median_£_per_m2'], 
                             name='median £ per m2', 
                             mode='lines', 
