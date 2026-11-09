@@ -62,7 +62,7 @@ def median_volume_table(cat_a_only):
     """Prepares the aggregated median £ per m2 and sales volume per month table"""
 
     med_vol_table = cat_a_only.resample('MS', on='deed_date')[['unique_id', '£/m2']].agg({'unique_id':'count', '£/m2':'median'})
-    med_vol_table = med_vol_table.rename(columns={'unique_id':'monthly_sales_count', '£/m2':'median_£_per_m2'}).reset_index
+    med_vol_table = med_vol_table.rename(columns={'unique_id':'monthly_sales_count', '£/m2':'median_£_per_m2'}).reset_index()
     return med_vol_table
 
 # SAVE OUTPUT
