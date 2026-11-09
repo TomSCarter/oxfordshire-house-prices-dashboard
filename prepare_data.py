@@ -44,12 +44,12 @@ def price_district_table(cat_a_only):
     overall_medians = recent_years.groupby('district')['£/m2'].median().reset_index()
     overall_medians = overall_medians.rename(columns = {'£/m2':'district_median_£_per_m2'})
     overall_medians['district_median_£_per_m2'] = round(overall_medians['district_median_£_per_m2'], 2)
-    combined = recent_years_agg.merge(right= overall_medians, left_on='district', right_on='district')
+    combined = recent_years_agg.merge(right= overall_medians, on='district')
 
     order = ['Detached', 'Semi-detached', 'Terraced', 'Flat']
 
     combined['property_type'] = pd.Categorical(
-        recent_years_agg['property_type'],
+        combined['property_type'],
         categories=order,
         ordered=True
     )
