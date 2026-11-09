@@ -17,7 +17,7 @@ ANNOTATIONS = [['2016-03-01',
 1250, "Additional property<br>surcharge introduced", -50],
 ['2020-04-01', 600, "COVID-19 lockdown", -100],
 ['2021-06-01', 1900, "Stamp duty holiday deadlines", -75],
-['2025-03-01', 1500, "Thresholds reduced"]]
+['2025-03-01', 1500, "Thresholds reduced", None]]
 
 # CHART 1
 def district_price_chart(df):
@@ -51,7 +51,7 @@ def district_price_chart(df):
 def volume_price_chart(df):
     fig = px.line(df, 
             template=TEMPLATE,
-            x = df.index,
+            x = 'deed_date',
             y = 'monthly_sales_count',
             labels={'monthly_sales_count':'Monthly number of sales'})
     fig.update_xaxes(title_text=None, 
