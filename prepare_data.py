@@ -33,7 +33,7 @@ def prepare_data(raw_data):
 
 # AGGREGATED MEDIAN PRICE BY DISTRICT TABLE
 def price_district_table(cat_a_only):
-    """Prepares the aggregated table with median £ per m2 by district and property type"""
+    """Prepares the aggregated table with median £ per m2 by district and property type. Adds column for median whole district £ per m2"""
     
     recent_years = cat_a_only[cat_a_only['year'].isin(RECENT_YEARS)].copy()
 
@@ -41,16 +41,21 @@ def price_district_table(cat_a_only):
     recent_years_agg = recent_years_agg.rename(columns = {'property_subtype':'property_type', 'median':'£_per_m²'})
     recent_years_agg['£_per_m²'] = round(recent_years_agg['£_per_m²'], 2)
 
+    overall_medians = recent_years.groupby('district')['£/m2'].median().reset_index()
+    overall_medians = overall_medians.rename(columns = {'£/m2':'district_median_£_per_m2'})
+    overall_medians['district_median_£_per_m2'] = round(overall_medians['district_median_£_per_m2'], 2)
+    combined = recent_years_agg.merge(right= overall_medians, left_on='district', right_on='district')
+
     order = ['Detached', 'Semi-detached', 'Terraced', 'Flat']
 
-    recent_years_agg['property_type'] = pd.Categorical(
+    combined['property_type'] = pd.Categorical(
         recent_years_agg['property_type'],
         categories=order,
         ordered=True
     )
 
-    recent_years_agg = recent_years_agg.sort_values(['district', 'property_type']).reset_index(drop=True)
-    return recent_years_agg
+    combined = combined.sort_values(['district_median_£_per_m2', 'property_type']).reset_index(drop=True)
+    return combined
 
 # AGGREGATED MEDIAN PRICE AND VOLUME TABLE
 def median_volume_table(cat_a_only):
