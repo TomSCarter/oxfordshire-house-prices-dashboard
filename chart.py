@@ -1,4 +1,3 @@
-import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
@@ -9,7 +8,7 @@ TITLE_FONT_SIZE = 22
 FONT_SIZE = 18
 # proprety type color mapping
 PRICE_LINE_COLOR ='orange'
-VOLUME_LINE_COLOR = 'blue'
+VOLUME_LINE_COLOR = '#1f77b4'
 HIDE_BAR = {'displayModeBar': False}
 
 # ANNOTATIONS
@@ -18,16 +17,19 @@ ANNOTATIONS = [['2016-03-01',
 1250, "Additional property<br>surcharge introduced", -50],
 ['2020-04-01', 600, "COVID-19 lockdown", -100],
 ['2021-06-01', 1900, "Stamp duty holiday deadlines", -75],
-['2025-03-01', 1500, "Thresholds reduced", 0]]
+['2025-03-01', 1500, "Thresholds reduced"]]
 
 # CHART 1
-def chart_1(df):
+def district_price_chart(df):
+
+    df = df.sort_values(['district_median_£_per_m2'])
+    district_order = list(df['district'].unique())
     fig = px.scatter(df, 
             x= '£_per_m²', 
             y='district', 
             color='property_type', 
                 
-            category_orders={'district':['Cherwell', 'Vale of White Horse', 'West Oxfordshire', 'South Oxfordshire', 'Oxford'], 
+            category_orders={'district':district_order, 
                                 'property_type':['Detached', 'Semi-detached', 'Terraced', 'Flat']},
             template= TEMPLATE,
             labels={'count':'Number of sales', 'property_type':'Property type', 'district':'District', '£_per_m²': '£ per m²'},
@@ -46,7 +48,7 @@ def chart_1(df):
 
 
 # CHART 2
-def chart_2(df):
+def volume_price_chart(df):
     fig = px.line(df, 
             template=TEMPLATE,
             x = df.index,
