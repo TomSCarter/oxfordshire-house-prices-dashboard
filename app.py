@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from charts import district_price_chart, volume_price_chart, HIDE_BAR
+from charts import district_price_chart, historical_volume_chart, historical_price_chart, HIDE_BAR
 
 st.set_page_config(page_title='Oxfordshire house prices dashboard', layout='wide')
 
@@ -12,7 +12,7 @@ price_district_table = load_table('data/aggregated/price_district_table.parquet'
 med_vol_table = load_table('data/aggregated/median_volume_table.parquet')
 yearly_table = load_table('data/aggregated/yearly_median_table.parquet')
 
-st.title('Oxfordshire house prices dashboard for property investor')
+st.title('Oxfordshire house prices dashboard')
 st.markdown("""An interactive dashboard of residential sales in Oxfordshire from 2015 to 2025, focused on sales volume and £ per m² floor area.\n\n\n\n
 """)
 
@@ -30,11 +30,10 @@ st.markdown("""An interactive dashboard of residential sales in Oxfordshire from
 # with col3:
 #     st.metric("Oxford", f"£{price_district_table.iloc[-1, 4]:,.0f}/m²", f"{100 * (price_district_table.iloc[-1, 4] - price_district_table.iloc[0, 4]) / price_district_table.iloc[0, 4]:,.0f} % vs Cherwell", border=True)
 
-st.header("""Where is space cheapest in Oxfordshire?""")
-st.markdown("""**Finding**: Cherwell has the lowest median price per floor area with the largest range of prices (+£1080/m2 from flats to detached), making flats in Cherwell appear particularly cheap. 
-Across all districts Flats are cheapest and Detached houses most expensive but the order of Terraced vs Semi-detached houses changes in the more expensive districts. 
-Oxford is most expensive with terraced houses siginificantly more expensive than semi-detatched (+6% £324/m²), this may reflect town centre properties vs suburbs.""")
-st.markdown("""**Recomendation**: The apparent lower price of flats in Cherwell and semi-detached houses in Oxford and South Oxfordshire warrants further investigation. Is this a result of location within the district?""")
+st.subheader("""Where is space cheapest in Oxfordshire?""")
+st.markdown("""**Finding**: Cherwell has the cheapest space, where flats cost just £3,100 per m² compared to £6,300 per m² for detached Oxford properties. 
+Across all districts flats are cheapest and detached houses most expensive. In Oxford terraced houses cost about 6% more per m² than semi-detatched, which is the reverse of most other districts, this could reflect town centre terraces vs suburban semis.""")
+st.markdown("""**Recommendation**: For the most floor area per £, look at flats in Cherwell, Vale of White Horse and West Oxfordshire. In Oxford semi-detached houses offer more space for the money than terraced. These are district-wide medians, so prices within a district will vary by location.""")
 st.plotly_chart(district_price_chart(price_district_table), width='stretch', theme=None, config=HIDE_BAR)
 
 # left, right = st.columns([5,1], vertical_alignment="center")
@@ -43,12 +42,19 @@ st.plotly_chart(district_price_chart(price_district_table), width='stretch', the
 # with right:
 #     st.metric("Median £/m² in 2025", f"£{yearly_table.iloc[10, 2]:,.0f}", f"{100 * (yearly_table.iloc[10, 2] - yearly_table.iloc[9, 2]) / yearly_table.iloc[9, 2]:,.1f}% vs 2024", border=True)
 
-st.header("""How have tax changes effected sales volumes and prices?""")
-st.markdown("""**Finding**: """)
-st.markdown("""**Recomendation**: """)
+# st.subheader("""How have tax changes affected sales volumes?""")
+st.subheader("""What has been the overall price/volume trend since 2015?""")
+st.markdown("""**Finding**: When a tax increase is implemented sales are brought forward to avoid the change, resulting in a spike in sales volume in the months before followed by a corresponding drop. 
+Month-to-month variation of prices (median £ per m²) around these events is typically within noise. Though from 2020 to 2022 there was a 15% increase in prices, which was during the period of COVID-19 lockdowns and a stamp duty holiday. Prices have been flat since in cash terms.""")
+st.markdown("""**Recomendation**: Keep up-to-date with any upcoming tax changes. Buyers will be keen to complete before any tax increase takes effect but prices do not appear to increase.""")
 
-st.plotly_chart(volume_price_chart(med_vol_table), width='stretch', theme=None, config=HIDE_BAR)
+st.plotly_chart(historical_volume_chart(med_vol_table), width='stretch', theme=None, config=HIDE_BAR)
 
+# st.subheader("""How have prices changed over time?""")
+# st.markdown("""**Finding**: Between 2020 and mid-2022 there was a 15% increase in median £ per m², since then prices have been flat. The period of increasing prices included COVID-19 lockdowns and a stamp duty holiday.""")
+# st.markdown("""**Recomendation**: In the current enviroment a properties price cannot be expected to rise without intervention.""")
+
+st.plotly_chart(historical_price_chart(med_vol_table), width='stretch', theme=None, config=HIDE_BAR)
 
 
 st.markdown("""Built with Plotly and Streamlit.\n
