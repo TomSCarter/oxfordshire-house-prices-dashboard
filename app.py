@@ -16,13 +16,20 @@ st.title('Oxfordshire house prices dashboard')
 st.markdown("""An interactive dashboard of residential sales in Oxfordshire from 2015 to 2025, focused on sales volume and £ per m² floor area.\n
 """)
 
-col1, col2, col3 = st.columns(3)
-col1.metric("Cherwell", f"£{price_district_table.iloc[0, 4]:,.0f}/m²")
-col2.metric("Oxford", f"£{price_district_table.iloc[-1, 4]:,.0f}/m²")
-col3.metric("Median £/m² in 2025", f"£{yearly_table.iloc[10, 2]:,.0f}", f"{100 * (yearly_table.iloc[10, 2] - yearly_table.iloc[9, 2]) / yearly_table.iloc[9, 2]:,.1f}% vs 2024")
+left, right = st.columns([1,8], gap="small")
+with left:
+    st.metric("Cherwell", f"£{price_district_table.iloc[0, 4]:,.0f}/m²", border=True)
+    st.metric("Oxford", f"£{price_district_table.iloc[-1, 4]:,.0f}/m²", border=True)
+with right:
+    st.plotly_chart(district_price_chart(price_district_table), width='stretch', theme=None, config=HIDE_BAR)
 
-st.plotly_chart(district_price_chart(price_district_table), width='stretch', theme=None, config=HIDE_BAR)
-st.plotly_chart(volume_price_chart(med_vol_table), width='stretch', theme=None, config=HIDE_BAR)
+left, right = st.columns([1,8], gap="small")
+with left:
+    st.metric("Median £/m² in 2025", f"£{yearly_table.iloc[10, 2]:,.0f}", f"{100 * (yearly_table.iloc[10, 2] - yearly_table.iloc[9, 2]) / yearly_table.iloc[9, 2]:,.1f}% vs 2024", border=True)
+with right:
+    st.plotly_chart(volume_price_chart(med_vol_table), width='stretch', theme=None, config=HIDE_BAR)
+
+
 
 st.markdown("""Built with Plotly and Streamlit.\n
 The data comes from my Land Registry cleaning pipeline, which links HM Land Registry Price Paid Data to Energy Performance Certificates. 
