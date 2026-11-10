@@ -14,10 +14,10 @@ HIDE_BAR = {'displayModeBar': False}
 # ANNOTATIONS
 
 ANNOTATIONS = [['2016-03-01', 
-1250, "Additional property<br>surcharge introduced", -50],
-['2020-04-01', 600, "COVID-19 lockdown", -100],
-['2021-06-01', 1900, "Stamp duty holiday deadlines", -75],
-['2025-03-01', 1500, "Thresholds reduced", None]]
+1250, "Additional property<br>surcharge introduced", 1800],
+['2020-04-01', 600, "COVID-19 lockdown", 1800],
+['2021-06-01', 1900, "Stamp duty holiday deadlines", 2450],
+['2025-03-01', 1500, "Thresholds reduced", 1800]]
 
 # CHART 1
 def district_price_chart(df):
@@ -40,7 +40,9 @@ def district_price_chart(df):
     fig.update_layout(title_text='Oxford city is the most expensive district per m² for every property type',
                     title_subtitle_text='Median price per m², standard market sales (cat. A), Oxfordshire, 2023–2025',
                     title_font_size=TITLE_FONT_SIZE,
-                    font_size=FONT_SIZE)
+                    font_size=FONT_SIZE,
+                    margin_t=100,
+                    plot_bgcolor='white')
     fig.update_traces(marker_size=12,
                     hovertemplate='<b>%{customdata[0]}, %{y}</b><br>Median £%{x:,.0f} per m²<br>%{customdata[1]} sales<extra></extra>')
     return fig
@@ -60,7 +62,8 @@ def volume_price_chart(df):
                     range=['2015-01-01','2026-01-01'], 
                     rangeslider_visible=True)
     fig.update_yaxes(title_text="Monthly number of sales", 
-                    range=[0, 2500])
+                    range=[0, 2500],
+                    tickformat=',')
 
     for x_val, y_val, text_val, ay_val in ANNOTATIONS:
         fig.add_annotation(x=x_val, 
@@ -68,6 +71,7 @@ def volume_price_chart(df):
                         text=text_val,
                         showarrow=True,
                         arrowhead=1,
+                        ayref='y',
                         ay=ay_val)
 
     fig.update_layout(title_text='Tax changes shift sales earlier',
@@ -75,7 +79,8 @@ def volume_price_chart(df):
                     title_font_size=TITLE_FONT_SIZE,
                     font_size=FONT_SIZE,
                     showlegend=False,
-                    margin_t=100)
+                    margin_t=100,
+                    plot_bgcolor='white')
     fig.update_traces(hovertemplate='%{x|<b>%b %Y</b>}<br>Number of sales: %{y}<extra></extra>', line_color = VOLUME_LINE_COLOR)
     fig.add_trace(go.Scatter(x=df['deed_date'], 
                             y=df['median_£_per_m2'], 
