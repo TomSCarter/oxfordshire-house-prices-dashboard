@@ -15,7 +15,7 @@ HIDE_BAR = {'displayModeBar': False}
 
 ANNOTATIONS = [['2016-03-01', 
 1250, "Additional property<br>surcharge introduced", 1800],
-['2020-04-01', 600, "COVID-19 lockdown", 1800],
+['2020-04-01', 600, "COVID-19<br>lockdown", 1800],
 ['2021-06-01', 1900, "Stamp duty holiday deadlines", 2450],
 ['2025-03-01', 1500, "Thresholds reduced", 1800]]
 
@@ -37,12 +37,13 @@ def district_price_chart(df):
             color_discrete_sequence=COLOR_PALETTE)
     fig.update_xaxes(title_text='Median price per m² floor area', tickprefix='£', tickformat=',')
     fig.update_yaxes(title_text=None, showgrid=False)
-    fig.update_layout(title_text='Oxford city is the most expensive district per m² for every property type',
+    fig.update_layout(title_text='Cherwell is the least expensive district per m² for every property type',
                     title_subtitle_text='Median price per m², standard market sales (cat. A), Oxfordshire, 2023–2025',
                     title_font_size=TITLE_FONT_SIZE,
                     font_size=FONT_SIZE,
                     margin_t=100,
-                    plot_bgcolor='white')
+                    plot_bgcolor='white',
+                    title_x=0)
     fig.update_traces(marker_size=12,
                     hovertemplate='<b>%{customdata[0]}, %{y}</b><br>Median £%{x:,.0f} per m²<br>%{customdata[1]} sales<extra></extra>')
     return fig
@@ -80,7 +81,9 @@ def historical_volume_chart(df):
                     font_size=FONT_SIZE,
                     showlegend=False,
                     margin_t=100,
-                    plot_bgcolor='white')
+                    plot_bgcolor='white',
+                    title_x=0,
+                    height=500)
     fig.update_traces(hovertemplate='%{x|<b>%b %Y</b>}<br>Number of sales: %{y}<extra></extra>', line_color = VOLUME_LINE_COLOR)
     return fig
 
@@ -107,7 +110,14 @@ def historical_price_chart(df):
                     font_size=FONT_SIZE,
                     showlegend=False,
                     margin_t=100,
-                    plot_bgcolor='white')
+                    plot_bgcolor='white',
+                    title_x=0)
     fig.update_traces(hovertemplate='%{x|<b>%b %Y</b>}<br>Median £ per m²: %{y:,.0f}<extra></extra>', line_color = PRICE_LINE_COLOR)
+
+
+    for x_val, y_val, text_val, ay_val in ANNOTATIONS:
+        fig.add_vline(x=x_val, line_width=1, line_dash="dot",
+                  line_color="gray", opacity=0.8, annotation_text=text_val,
+    annotation_position="top right")
 
     return fig
