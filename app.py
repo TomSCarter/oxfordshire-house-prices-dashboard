@@ -16,22 +16,36 @@ st.title('Oxfordshire house prices dashboard for property investor')
 st.markdown("""An interactive dashboard of residential sales in Oxfordshire from 2015 to 2025, focused on sales volume and £ per m² floor area.\n\n\n\n
 """)
 
-col1, col2, col3 = st.columns([4, 1, 1], vertical_alignment="center")
 
-with col1:
-    st.header("""Where is space cheapest in Oxfordshire?""")
-with col2:
-    st.metric("Cherwell", f"£{price_district_table.iloc[0, 4]:,.0f}/m²", border=True)
-with col3:
-    st.metric("Oxford", f"£{price_district_table.iloc[-1, 4]:,.0f}/m²", f"{100 * (price_district_table.iloc[-1, 4] - price_district_table.iloc[0, 4]) / price_district_table.iloc[0, 4]:,.0f} % vs Cherwell", border=True)
+# col1, col2, col3 = st.columns([4, 1, 1], vertical_alignment="center")
 
+# with col1:
+#     st.header("""Where is space cheapest in Oxfordshire?""")
+#     st.markdown("""Finding: Cherwell has the lowest median price per floor area, with flats in Cherwell cheaper than expected relative to other districts. 
+#     Across all districts Flats are cheapest and Detached houses most expensive but the order of Terraced vs Semi-detached houses changes in the more expensive districts. 
+#     Oxford is most expensive with terraced houses siginificantly more expensive than semi-detatched, this may reflect town centre properties vs suburbs.""")
+#     st.markdown("""Recomendation: The apparently lower price of flats in Cherwell and semi-detached houses in Oxford and South Oxfordshire warrants further investigation. Is this a result of location within the district?""")
+# with col2:
+#     st.metric("Cherwell", f"£{price_district_table.iloc[0, 4]:,.0f}/m²", border=True)
+# with col3:
+#     st.metric("Oxford", f"£{price_district_table.iloc[-1, 4]:,.0f}/m²", f"{100 * (price_district_table.iloc[-1, 4] - price_district_table.iloc[0, 4]) / price_district_table.iloc[0, 4]:,.0f} % vs Cherwell", border=True)
+
+st.header("""Where is space cheapest in Oxfordshire?""")
+st.markdown("""**Finding**: Cherwell has the lowest median price per floor area with the largest range of prices (+£1080/m2 from flats to detached), making flats in Cherwell appear particularly cheap. 
+Across all districts Flats are cheapest and Detached houses most expensive but the order of Terraced vs Semi-detached houses changes in the more expensive districts. 
+Oxford is most expensive with terraced houses siginificantly more expensive than semi-detatched (+6% £324/m²), this may reflect town centre properties vs suburbs.""")
+st.markdown("""**Recomendation**: The apparent lower price of flats in Cherwell and semi-detached houses in Oxford and South Oxfordshire warrants further investigation. Is this a result of location within the district?""")
 st.plotly_chart(district_price_chart(price_district_table), width='stretch', theme=None, config=HIDE_BAR)
 
-left, right = st.columns([5,1], vertical_alignment="center")
-with left:
-    st.header("""How have tax changes effected sales volumes and prices?""")
-with right:
-    st.metric("Median £/m² in 2025", f"£{yearly_table.iloc[10, 2]:,.0f}", f"{100 * (yearly_table.iloc[10, 2] - yearly_table.iloc[9, 2]) / yearly_table.iloc[9, 2]:,.1f}% vs 2024", border=True)
+# left, right = st.columns([5,1], vertical_alignment="center")
+# with left:
+#     st.header("""How have tax changes effected sales volumes and prices?""")
+# with right:
+#     st.metric("Median £/m² in 2025", f"£{yearly_table.iloc[10, 2]:,.0f}", f"{100 * (yearly_table.iloc[10, 2] - yearly_table.iloc[9, 2]) / yearly_table.iloc[9, 2]:,.1f}% vs 2024", border=True)
+
+st.header("""How have tax changes effected sales volumes and prices?""")
+st.markdown("""**Finding**: """)
+st.markdown("""**Recomendation**: """)
 
 st.plotly_chart(volume_price_chart(med_vol_table), width='stretch', theme=None, config=HIDE_BAR)
 
