@@ -50,7 +50,7 @@ def district_price_chart(df):
 
 
 # CHART 2
-def volume_price_chart(df):
+def historical_volume_chart(df):
     fig = px.line(df, 
             template=TEMPLATE,
             x = 'deed_date',
@@ -82,37 +82,32 @@ def volume_price_chart(df):
                     margin_t=100,
                     plot_bgcolor='white')
     fig.update_traces(hovertemplate='%{x|<b>%b %Y</b>}<br>Number of sales: %{y}<extra></extra>', line_color = VOLUME_LINE_COLOR)
-    fig.add_trace(go.Scatter(x=df['deed_date'], 
-                            y=df['median_£_per_m2'], 
-                            name='median £ per m2', 
-                            mode='lines', 
-                            line_color= PRICE_LINE_COLOR, 
-                            hovertemplate='%{x|<b>%b %Y</b>}<br>Median £ per m²: %{y:,.0f}<extra></extra>',
-                            visible=False))
-    fig.update_layout(updatemenus=[dict(
-        buttons=[
-            dict(label='Monthly number of sales',
-                method='update',
-                args=[{'visible':[True, False]},
-                    {'title.text':'Tax changes shift sales earlier',
-                        'title.subtitle.text':'Standard market sales (cat. A) per month, Oxfordshire, 2015–2025',
-                        'yaxis.title.text':'Monthly number of sales',
-                        'yaxis.range':[0, 2500],
-                        'annotations':fig.layout.annotations,
-                        'yaxis.tickprefix': ''}]),
-            dict(label='Median £ per m²',
-                        method='update',
-                        args=[{'visible':[False, True]},
-                            {'title.text':"Median price per m² rose about 15% 2020–22, then levelled off",
-                                'title.subtitle.text':'Standard market sales (cat. A) median £ per m² each month, Oxfordshire, 2015–2025 (not adjusted for inflation)',
-                                'yaxis.title.text':'Median £ per m²',
-                                'yaxis.range':[3000, 5000],
-                                'yaxis.tickprefix':'£',
-                                'yaxis.tickformat':',',
-                                'annotations':[]}])
-        ],
-        direction='down',
-        x=1, xanchor='right', y=1.15, yanchor='top'
-    )])
+    return fig
+
+# CHART 3
+def historical_price_chart(df):
+    fig = px.line(df, 
+            template=TEMPLATE,
+            x = 'deed_date',
+            y = 'median_£_per_m2',
+            labels={'median_£_per_m2':'Median £ per m²'})
+    fig.update_xaxes(title_text=None, 
+                    nticks=20, 
+                    ticklabelstep=2, 
+                    range=['2015-01-01','2026-01-01'], 
+                    rangeslider_visible=True)
+    fig.update_yaxes(title_text="Median £ per m²", 
+                    range=[3000, 5000],
+                    tickformat=',',
+                    tickprefix='£')
+
+    fig.update_layout(title_text='Median price per m² rose about 15% 2020–22, then levelled off',
+                    title_subtitle_text='Standard market sales (cat. A) median £ per m² each month, Oxfordshire, 2015–2025 (not adjusted for inflation)',
+                    title_font_size=TITLE_FONT_SIZE,
+                    font_size=FONT_SIZE,
+                    showlegend=False,
+                    margin_t=100,
+                    plot_bgcolor='white')
+    fig.update_traces(hovertemplate='%{x|<b>%b %Y</b>}<br>Median £ per m²: %{y:,.0f}<extra></extra>', line_color = PRICE_LINE_COLOR)
 
     return fig
