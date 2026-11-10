@@ -27,3 +27,31 @@
 - District order now derived from data within the function rather than hard-coded
 - go.scatter needs full df['deed_date'] rather than just 'deed_date' as in px.scatter etc
 - Files kept in main directory as there are only 3 and it's the typical layout for a Streamlit app
+
+## app.py
+
+### Structure
+- Loads the aggregated Parquet files, never the full sales table
+- Data loading wrapped in a function decorated with @st.cache_data, so files aren't reread on every rerun (As Streamlit reruns the whole script on each interaction)
+- Page settings (st.set_page_config) first, wide layout
+- Charts and config=HIDE_BAR (passed into the charts to hide the toolbar) imported from charts.py
+
+### Layout
+- Dashboard title and description
+- One section per question: question as subheading, then Findings and Recommendations, then the chart for reference
+- Placeholders for the three remaining questions (energy rating, new builds, seasonality)
+- Footer: how the data was built (with link to the cleaning pipeline repo), limitations (category A only, EPC-matched sales only, not adjusted for inflation, no rental data), and both attribution statements
+
+### Design decisions
+- Tried st.metric figures beside the charts, but removed them: most repeated what the charts already show, and one (2025 median price) sat beside an unrelated chart (the relevant one was hidden by the dropdown). All made more sense once I focused on writing the findings and recommendations, which are more important anyway
+- Split the volume/price dropdown chart into two separate charts. The dropdown hid the price view, and the two views answer different questions (tax effects on volume vs. long-term price trend). A shame after the work I did building the dropdown, but hopefully the familiarity will still be useful in the future.
+- Added the tax event dates to the price chart as labelled dotted lines, to allow the reader to cross-reference the charts.
+
+### Display fixes
+- Light theme forced with .streamlit/config.toml, as the charts are designed for a white background (dark mode made gridlines obscure the annotation text)
+- theme=None in st.plotly_chart, plus explicit white plot backgrounds in charts.py, because Streamlit was still showing grey plot areas
+- Charts rendered at a different size in Streamlit than in the notebook (though depending on laptop vs monitor), which moved pixel-based positions:
+    - Subtitle overlapping chart 1: added a top margin
+    - Annotation pushed above chart 2: annotation positions changed from pixel offsets to y-axis values, and a fixed pixel chart height set
+- Price chart range slider extended past the data because the last vline label ran beyond the axis range: fixed by adding rangeslider_range to update_xaxes
+
