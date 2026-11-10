@@ -98,7 +98,8 @@ def historical_price_chart(df):
                     nticks=20, 
                     ticklabelstep=2, 
                     range=['2015-01-01','2026-01-01'], 
-                    rangeslider_visible=True)
+                    rangeslider_visible=True,
+                    rangeslider_range=['2015-01-01','2026-01-01'])
     fig.update_yaxes(title_text="Median £ per m²", 
                     range=[3000, 5000],
                     tickformat=',',
