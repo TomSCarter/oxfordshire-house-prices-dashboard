@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from charts import district_price_chart, historical_volume_chart, historical_price_chart, HIDE_BAR
+from charts import district_price_chart, historical_volume_chart, historical_price_chart, HIDE_BAR, seasonality_chart
 
 st.set_page_config(page_title='Oxfordshire house prices dashboard', layout='wide')
 
@@ -11,6 +11,7 @@ def load_table(path):
 price_district_table = load_table('data/aggregated/price_district_table.parquet')
 med_vol_table = load_table('data/aggregated/median_volume_table.parquet')
 yearly_table = load_table('data/aggregated/yearly_median_table.parquet')
+seasonality_table = load_table('data/aggregated/normal_years_medians.parquet')
 
 st.title('Oxfordshire house prices dashboard')
 st.markdown("""An interactive dashboard of residential sales in Oxfordshire from 2015 to 2025, focused on sales volume and £ per m² floor area.\n\n\n\n
@@ -37,6 +38,13 @@ st.plotly_chart(historical_volume_chart(med_vol_table), width='stretch', theme=N
 
 st.plotly_chart(historical_price_chart(med_vol_table), width='stretch', theme=None, config=HIDE_BAR)
 
+st.subheader(""" Do prices or sales volume vary throughout the year? When are they lowest/highest?""")
+st.markdown("""**Finding**: Sales volumes increase in the first half of the year to a peak in June (118% of an average month) then stay above average for the second half. 
+January has the lowest sales (73% of an average month) and there is a small bump in March possibly due to the end of the financial year. 
+Prices vary slightly through the year (around 2%) but part of this will be rising year-on-year prices, so there is no reliable seasonal pattern.""")
+st.markdown("""**Recommendation**: There may be less demand over winter, giving more choice and fewer competing buyers.""")
+st.plotly_chart(seasonality_chart(seasonality_table), width='stretch', theme=None, config=HIDE_BAR)
+
 st.subheader(""" Do homes with poor energy efficiency sell at a discount (per m²)?""")
 st.markdown("""**Finding**:""")
 st.markdown("""**Recommendation**:""")
@@ -45,9 +53,7 @@ st.subheader(""" Do new builds cost more per m²?""")
 st.markdown("""**Finding**:""")
 st.markdown("""**Recommendation**:""")
 
-st.subheader(""" Do prices or sales volume vary throughout the year? When are they lowest/highest?""")
-st.markdown("""**Finding**:""")
-st.markdown("""**Recommendation**:""")
+
 
 
 st.markdown("""Built by Tom Carter with Plotly and Streamlit.

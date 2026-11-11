@@ -9,6 +9,7 @@ FONT_SIZE = 18
 COLOR_PALETTE = px.colors.qualitative.Safe
 PRICE_LINE_COLOR ='orange'
 VOLUME_LINE_COLOR = '#1f77b4'
+PALE_GREY = "#d9dcdeff"
 HIDE_BAR = {'displayModeBar': False}
 
 # ANNOTATIONS
@@ -121,4 +122,41 @@ def historical_price_chart(df):
                   line_color="gray", opacity=0.8, annotation_text=text_val,
     annotation_position="top right")
 
+    return fig
+
+# CHART 4
+
+def seasonality_chart(df):
+    fig = px.line(df, x='month', y='max', template='plotly_white')
+    fig.update_traces(hovertemplate=None, line_color = PALE_GREY)
+
+    fig.add_trace(go.Scatter(x=df['month'], 
+                            y=df['min'],
+                            name='min', 
+                            mode='lines',  
+                            hovertemplate=None,
+                            fill='tonexty',
+                            line_color=PALE_GREY))
+    fig.add_trace(go.Scatter(x=df['month'], 
+                            y=df['median'],
+                            name='median' ,
+                            mode='lines',  
+                            hovertemplate=None,
+                            line_color=VOLUME_LINE_COLOR))
+    fig.update_yaxes(title='Sales vs average month<br>(100 = average)')
+    fig.update_xaxes(title=None, tickmode="array",
+        tickvals=list(range(1, 13)), ticktext=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+    fig.update_layout(showlegend=False)
+    fig.add_hline(y=100, line_width=1, line_dash="dot",
+                    line_color="darkgray", opacity=0.8)
+    fig.update_layout(title_text='Sales are lowest in winter, peak in June and stay above average through the second half',
+                    title_subtitle_text='Median across years, with range shaded. Cat. A sales, Oxfordshire, 2015–2025, excluding tax-affected years (2016, 2020, 2021, 2025).',
+                    title_font_size=TITLE_FONT_SIZE,
+                    font_size=FONT_SIZE,
+                    showlegend=False,
+                    margin_t=100,
+                    plot_bgcolor='white',
+                    title_x=0)
+    fig.update_traces(hovertemplate='<b>%{x}</b><br>%{y:,.0f} (average month =100)<extra></extra>')
+    
     return fig
