@@ -5,6 +5,7 @@ from pathlib import Path
 DATA_FILE = "data/raw/pp_epc_oxfordshire_2015_2025_v2.parquet"
 OUT_PATH = "data/aggregated/"
 RECENT_YEARS = [2023, 2024, 2025]
+TAX_CHANGE_YEARS = [2016, 2020, 2021, 2025]
 
 # LOAD FUNCTION
 
@@ -73,6 +74,20 @@ def yearly_median_table(cat_a_only):
     yearly_table['median_£_per_m2'] = round(yearly_table['median_£_per_m2'], 2)
     return yearly_table
 
+# SEASONALITY TABLE
+def seasonality_table(cat_a_only):
+    monthly = cat_a_only.groupby(['year', 'month'])[['unique_id', '£/m2']].agg({'unique_id':'count', '£/m2':'median'}).reset_index()
+
+    avg_monthly = monthly.groupby(['year'])[['unique_id', '£/m2']].agg({'unique_id':'mean', '£/m2':'mean'}).reset_index()
+
+    merged_monthly = monthly.merge(avg_monthly, on='year').rename(columns={'unique_id_x':'monthly_sales', '£/m2_x':'£/m2', 'unique_id_y':'avg_vol', '£/m2_y':'avg_£/m2'})
+    merged_monthly['norm_monthly_sales'] = 100 * merged_monthly['monthly_sales'] / merged_monthly['avg_vol']
+    merged_monthly['norm_monthly_£/m2'] = 100 * merged_monthly['£/m2'] / merged_monthly['avg_£/m2']
+
+    normal_years = merged_monthly[~merged_monthly['year'].isin(TAX_CHANGE_YEARS)]
+    normal_years_medians = normal_years.groupby('month')['norm_monthly_sales'].agg(['median', 'max', 'min']).reset_index()
+    return normal_years_medians
+
 # SAVE OUTPUT
 def save_output(df, out_path, out_name):
     """Checks for licensing restricted columns then saves the final table as parquet"""
@@ -103,6 +118,11 @@ def main():
     yearly_table = yearly_median_table(cat_a_only)
     save_output(yearly_table, OUT_PATH, 'yearly_median_table.parquet')
     print(f"Saved aggregated yearly median price and volume table, shape: {yearly_table.shape}")
+    print(yearly_table)  
+
+    normal_years_medians = seasonality_table(cat_a_only)
+    save_output(normal_years_medians, OUT_PATH, 'normal_years_medians.parquet')
+    print(f"Saved normalised monthly volume table, shape: {normal_years_medians.shape}")
     print(yearly_table)  
 
 # STANDARD GUARD
