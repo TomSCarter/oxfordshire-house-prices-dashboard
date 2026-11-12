@@ -2,7 +2,7 @@
 
 An interactive dashboard of residential sales in Oxfordshire from 2015 to 2025, for property investors, built with Plotly and Streamlit.
 
-**Live dashboard:** [link]
+**Live dashboard:** [Oxfordshire house prices dashboard](https://oxfordshire-house-prices-dashboard.streamlit.app/)
 
 The data comes from my [Land Registry cleaning pipeline](https://github.com/TomSCarter/land-registry-cleaning-pipeline), which links HM Land Registry Price Paid Data to Energy Performance Certificates. That link adds floor area and energy rating to each sale, which makes measures such as price per square metre possible.
 
