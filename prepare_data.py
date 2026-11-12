@@ -76,6 +76,7 @@ def yearly_median_table(cat_a_only):
 
 # SEASONALITY TABLE
 def seasonality_table(cat_a_only):
+    """Generates a table of volume and £/m2 by month vs an average month (set to 100)"""
     monthly = cat_a_only.groupby(['year', 'month'])[['unique_id', '£/m2']].agg({'unique_id':'count', '£/m2':'median'}).reset_index()
 
     avg_monthly = monthly.groupby(['year'])[['unique_id', '£/m2']].agg({'unique_id':'mean', '£/m2':'mean'}).reset_index()
@@ -87,6 +88,16 @@ def seasonality_table(cat_a_only):
     normal_years = merged_monthly[~merged_monthly['year'].isin(TAX_CHANGE_YEARS)]
     normal_years_medians = normal_years.groupby('month')['norm_monthly_sales'].agg(['median', 'max', 'min']).reset_index()
     return normal_years_medians
+
+# ENERGY EFFICIENCY TABLE
+def energy_efficiency_table(cat_a_only):
+        """Generates table with £/m2 by property type and energy efficiency ratings"""
+        exisiting_builds = cat_a_only[cat_a_only['new_build'] == 'N']
+        grouping = {"A": "A/B", "B": "A/B", "F": "F/G", "G": "F/G"}
+        exisiting_builds['energy_efficiency_rating_group'] = exisiting_builds['current_energy_rating'].replace(grouping)
+        exisiting_builds = exisiting_builds[exisiting_builds['EPC_expired'] == False]
+        energy_efficiency_table = exisiting_builds.groupby(['property_subtype', 'energy_efficiency_rating_group'])['£/m2'].median()
+        return energy_efficiency_table
 
 # SAVE OUTPUT
 def save_output(df, out_path, out_name):
