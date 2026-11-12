@@ -160,3 +160,29 @@ def seasonality_chart(df):
     fig.update_traces(hovertemplate='<b>%{x}</b><br>%{y:,.0f} (average month =100)<extra></extra>')
     
     return fig
+
+# CHART 5
+
+def energy_efficiency_chart(df):
+    fig = px.line(df, 
+              x='energy_efficiency_rating_group', 
+              y='£/m2', 
+              color='property_type',
+              category_orders={'property_type':['Detached', 'Semi-detached', 'Terraced', 'Flat']},
+              template= TEMPLATE,
+              labels={'property_type':'Property type', '£/m2': '£ per m²'},
+              custom_data=['property_type'],
+              color_discrete_sequence=COLOR_PALETTE)
+    fig.update_yaxes(title_text='Median price<br>per m² floor area', tickprefix='£', tickformat=',')
+    fig.update_xaxes(title_text='Energy efficiency rating', showgrid=False)
+    fig.update_layout(title_text='Energy efficiency rating does not have a clear effect on price',
+                    title_subtitle_text='Median price per m², standard market sales (cat. A), Oxfordshire, 2015–2025',
+                    title_font_size=TITLE_FONT_SIZE,
+                    font_size=FONT_SIZE,
+                    margin_t=100,
+                    plot_bgcolor='white',
+                    title_x=0)
+    fig.update_traces(marker_size=12,
+                    hovertemplate='<b>%{customdata[0]}, Rating: %{x}</b><br>Median £%{y:,.0f} per m²<extra></extra>')
+
+    return fig
