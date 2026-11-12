@@ -23,7 +23,7 @@
 
 ## charts.py
 - Module containing chart functions. To be imported by the app and notebook. Each function takes one of the aggregated tables and returns a figure object (not the displayed graph)
-- Structure: Shared style settings, annotations as list of lists (for looping over in chart function), district_price_chart(), volume_price_chart()
+- Structure: Shared style settings, annotations as list of lists (for looping over in chart function), district_price_chart(), historical_volume_chart(), historical_price_chart(), seasonality_chart(), energy_efficiency_chart()
 - District order now derived from data within the function rather than hard-coded
 - go.scatter needs full df['deed_date'] rather than just 'deed_date' as in px.scatter etc
 - Files kept in main directory as there are only 3 and it's the typical layout for a Streamlit app
@@ -38,8 +38,7 @@
 
 ### Layout
 - Dashboard title and description
-- One section per question: question as subheading, then Findings and Recommendations, then the chart for reference
-- Placeholders for the three remaining questions (energy rating, new builds, seasonality)
+- One section per question: question as subheading, then Findings and Recommendations, then the chart for reference (cheapest space, price/sales volume over time, seasonality, energy rating)
 - Footer: how the data was built (with link to the cleaning pipeline repo), limitations (category A only, EPC-matched sales only, not adjusted for inflation, no rental data), and both attribution statements
 
 ### Design decisions
@@ -54,4 +53,30 @@
     - Subtitle overlapping chart 1: added a top margin
     - Annotation pushed above chart 2: annotation positions changed from pixel offsets to y-axis values, and a fixed pixel chart height set
 - Price chart range slider extended past the data because the last vline label ran beyond the axis range: fixed by adding rangeslider_range to update_xaxes
+
+## Scope change
+- Dashboard reduced from 5 questions to 4: £/m² by district, price and volume trend since 2015, seasonality, and the energy-efficiency discount
+- New-build premium question dropped: a raw comparison is too confounded (new builds differ in size, location and type). To be answered next week with a regression including a new-build flag, floor area and district
+
+## Seasonality chart
+- Each month's sales expressed as an index relative to the year's average month (100 = average), so the long-term trend doesn't hide the seasonal pattern
+- Tax-affected years (2016, 2020, 2021, 2025) excluded, so not distorted by the deadline spikes
+- Line: median index across the remaining years. Band: min to max across those years, to show how consistent the pattern is
+    - Chose a band over one line per year: with seven years, individual lines mostly added clutter
+- Reference line at 100 (an average month), month names on the x-axis, line colour matching the volume chart
+- Finding: January is quietest (about 73% of an average month), June busiest (about 118%), and the second half of the year stays above average. A smaller March bump remains even with tax years excluded
+- Prices: a calendar-year baseline showed about ±2% variation, but part of that reflects prices rising within each year, so the dashboard says there's no reliable seasonal pattern. A rolling baseline would test this properly (in BACKLOG.md)
+- Recommendation accounts for completion dates lagging agreed sales by a couple of months, and doesn't claim a winter price discount, since the price data doesn't show one
+
+## Energy efficiency chart
+ - Exclude new builds (19485 rows) as they carry a premium and are mostly A/B to give 85561 rows
+ - Band A (0.2%) and band G (0.6%) rare and grouped with adjacent to give A/B, C, D, E, and F/G
+ - Excluded rows with an expired EPC (982 rows) leaving 84575 rows, as these are most likely to be a poor reflection of the properties energy efficiency at the time of sale
+ - Using 2015-2025 means as properties get more efficient and more expensive over time, the trend is distorted (prices rose about 27% over the period while the mix of ratings changed). Limited to recent (2023-2025) records.
+    - Efficiency ratings still well populated (min F/G: 557 to max C: 8149)
+- Added count to table and tooltip
+- Excluded point for Flats rated F/G due to only 18 records, with the reason in the subtitle, so the least reliable value isn't the most prominent
+- Main result: A/B-rated homes have the lowest median £/m² for every property type (roughly 8–15% below D). For semi-detached and terraced, F/G is also lower than C–E. Detached is the exception: F/G is about level with E, the highest
+- Wording kept to association, not cause: likely confounders are building age and location
+- Subtitle notes that some certificates predate the 2015 change in rating method
 
