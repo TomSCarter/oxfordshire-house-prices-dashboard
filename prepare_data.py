@@ -104,7 +104,7 @@ def energy_efficiency_table(cat_a_only):
         cat_a_only = cat_a_only.copy()
         recent_exisiting = cat_a_only[(cat_a_only['new_build'] == 'N') 
                                       & (cat_a_only['EPC_expired'] == False) 
-                                      & (cat_a_only['year'].isin(RECENT_YEARS))]
+                                      & (cat_a_only['year'].isin(RECENT_YEARS))].copy()
 
         grouping = {"A": "A/B", "B": "A/B", "F": "F/G", "G": "F/G"}
         recent_exisiting['energy_efficiency_rating_group'] = recent_exisiting['current_energy_rating'].replace(grouping)
@@ -152,7 +152,7 @@ def main():
     normal_years_medians = seasonality_table(cat_a_only)
     save_output(normal_years_medians, OUT_PATH, 'normal_years_medians.parquet')
     print(f"Saved normalised monthly volume table, shape: {normal_years_medians.shape}")
-    print(yearly_table)  
+    print(normal_years_medians)  
 
     energy_efficiency = energy_efficiency_table(cat_a_only)
     save_output(energy_efficiency, OUT_PATH, 'energy_efficiency.parquet')
