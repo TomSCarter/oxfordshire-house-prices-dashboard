@@ -109,7 +109,7 @@ def energy_efficiency_table(cat_a_only):
         grouping = {"A": "A/B", "B": "A/B", "F": "F/G", "G": "F/G"}
         recent_exisiting['energy_efficiency_rating_group'] = recent_exisiting['current_energy_rating'].replace(grouping)
 
-        energy_efficiency_table = recent_exisiting.groupby(['property_subtype', 'energy_efficiency_rating_group'])['£/m2'].median()
+        energy_efficiency_table = recent_exisiting.groupby(['property_subtype', 'energy_efficiency_rating_group'])['£/m2'].agg(['median', 'count'])
         energy_efficiency_table = energy_efficiency_table.reset_index().rename(columns= {'property_subtype':'property_type'})
 
         return energy_efficiency_table
