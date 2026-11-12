@@ -62,21 +62,28 @@ def price_district_table(cat_a_only):
 def median_volume_table(cat_a_only):
     """Prepares the aggregated median £ per m2 and sales volume per month table"""
 
+    cat_a_only = cat_a_only.copy()
     med_vol_table = cat_a_only.resample('MS', on='deed_date')[['unique_id', '£/m2']].agg({'unique_id':'count', '£/m2':'median'})
     med_vol_table = med_vol_table.rename(columns={'unique_id':'monthly_sales_count', '£/m2':'median_£_per_m2'}).reset_index()
+
     return med_vol_table
 
 # YEARLY MEDIAN PRICE TABLE
 def yearly_median_table(cat_a_only):
     """Generates a table of yearly median £ per m2 floor area and sales volume"""
+
+    cat_a_only = cat_a_only.copy()
     yearly_table = cat_a_only.resample('YS', on='deed_date')[['unique_id', '£/m2']].agg({'unique_id':'count', '£/m2':'median'})
     yearly_table = yearly_table.rename(columns={'unique_id':'monthly_sales_count', '£/m2':'median_£_per_m2'}).reset_index()
     yearly_table['median_£_per_m2'] = round(yearly_table['median_£_per_m2'], 2)
+
     return yearly_table
 
 # SEASONALITY TABLE
 def seasonality_table(cat_a_only):
     """Generates a table of volume and £/m2 by month vs an average month (set to 100)"""
+
+    cat_a_only = cat_a_only.copy()
     monthly = cat_a_only.groupby(['year', 'month'])[['unique_id', '£/m2']].agg({'unique_id':'count', '£/m2':'median'}).reset_index()
 
     avg_monthly = monthly.groupby(['year'])[['unique_id', '£/m2']].agg({'unique_id':'mean', '£/m2':'mean'}).reset_index()
@@ -87,22 +94,30 @@ def seasonality_table(cat_a_only):
 
     normal_years = merged_monthly[~merged_monthly['year'].isin(TAX_CHANGE_YEARS)]
     normal_years_medians = normal_years.groupby('month')['norm_monthly_sales'].agg(['median', 'max', 'min']).reset_index()
+
     return normal_years_medians
 
 # ENERGY EFFICIENCY TABLE
 def energy_efficiency_table(cat_a_only):
         """Generates table with £/m2 by property type and energy efficiency ratings"""
-        exisiting_builds = cat_a_only[cat_a_only['new_build'] == 'N']
+
+        cat_a_only = cat_a_only.copy()
+        recent_exisiting = cat_a_only[(cat_a_only['new_build'] == 'N') 
+                                      & (cat_a_only['EPC_expired'] == False) 
+                                      & (cat_a_only['year'].isin(RECENT_YEARS))]
+
         grouping = {"A": "A/B", "B": "A/B", "F": "F/G", "G": "F/G"}
-        exisiting_builds['energy_efficiency_rating_group'] = exisiting_builds['current_energy_rating'].replace(grouping)
-        exisiting_builds = exisiting_builds[exisiting_builds['EPC_expired'] == False]
-        energy_efficiency_table = exisiting_builds.groupby(['property_subtype', 'energy_efficiency_rating_group'])['£/m2'].median()
+        recent_exisiting['energy_efficiency_rating_group'] = recent_exisiting['current_energy_rating'].replace(grouping)
+
+        energy_efficiency_table = recent_exisiting.groupby(['property_subtype', 'energy_efficiency_rating_group'])['£/m2'].median()
         energy_efficiency_table = energy_efficiency_table.reset_index().rename(columns= {'property_subtype':'property_type'})
+
         return energy_efficiency_table
 
 # SAVE OUTPUT
 def save_output(df, out_path, out_name):
     """Checks for licensing restricted columns then saves the final table as parquet"""
+    
     not_allowed = ['unique_id', 'address', 'saon', 'paon', 'street', 'postcode', 'uprn']
     cols = df.columns
     if any(cols.isin(not_allowed)):
