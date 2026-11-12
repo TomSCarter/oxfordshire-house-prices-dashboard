@@ -10,12 +10,11 @@ def load_table(path):
 
 price_district_table = load_table('data/aggregated/price_district_table.parquet')
 med_vol_table = load_table('data/aggregated/median_volume_table.parquet')
-yearly_table = load_table('data/aggregated/yearly_median_table.parquet')
 seasonality_table = load_table('data/aggregated/normal_years_medians.parquet')
 energy_efficiency_table = load_table('data/aggregated/energy_efficiency.parquet')
 
 st.title('Oxfordshire house prices dashboard')
-st.markdown("""An interactive dashboard of residential sales in Oxfordshire from 2015 to 2025, focused on sales volume and £ per m² floor area.\n\n\n\n
+st.markdown("""An interactive dashboard of residential sales in Oxfordshire from 2015 to 2025 for property investors, focused on sales volume and £ per m² floor area.\n\n\n\n
 """)
 
 st.subheader("""Where is space cheapest in Oxfordshire?""")
@@ -23,12 +22,6 @@ st.markdown("""**Finding**: Cherwell has the cheapest space, where flats cost ju
 Across all districts flats are cheapest and detached houses most expensive. In Oxford terraced houses cost about 6% more per m² than semi-detached, which is the reverse of most other districts. This could reflect town centre terraces vs suburban semis.""")
 st.markdown("""**Recommendation**: For the most floor area per £, look at flats in Cherwell, Vale of White Horse and West Oxfordshire. In Oxford semi-detached houses offer more space for the money than terraced. These are district-wide medians, so prices within a district will vary by location.""")
 st.plotly_chart(district_price_chart(price_district_table), width='stretch', theme=None, config=HIDE_BAR)
-
-# left, right = st.columns([5,1], vertical_alignment="center")
-# with left:
-#     st.header("""How have tax changes effected sales volumes and prices?""")
-# with right:
-#     st.metric("Median £/m² in 2025", f"£{yearly_table.iloc[10, 2]:,.0f}", f"{100 * (yearly_table.iloc[10, 2] - yearly_table.iloc[9, 2]) / yearly_table.iloc[9, 2]:,.1f}% vs 2024", border=True)
 
 st.subheader("""What has been the overall price/volume trend since 2015?""")
 st.markdown("""**Finding**: When a tax increase is implemented sales are brought forward to avoid the change, resulting in a spike in sales volume in the months before followed by a corresponding drop. 
