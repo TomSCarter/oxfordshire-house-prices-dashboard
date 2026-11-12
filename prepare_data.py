@@ -96,7 +96,7 @@ def energy_efficiency_table(cat_a_only):
         grouping = {"A": "A/B", "B": "A/B", "F": "F/G", "G": "F/G"}
         exisiting_builds['energy_efficiency_rating_group'] = exisiting_builds['current_energy_rating'].replace(grouping)
         exisiting_builds = exisiting_builds[exisiting_builds['EPC_expired'] == False]
-        energy_efficiency_table = exisiting_builds.groupby(['property_subtype', 'energy_efficiency_rating_group'])['£/m2'].median()
+        energy_efficiency_table = exisiting_builds.groupby(['property_subtype', 'energy_efficiency_rating_group'])['£/m2'].median().reset_index()
         return energy_efficiency_table
 
 # SAVE OUTPUT
@@ -135,6 +135,11 @@ def main():
     save_output(normal_years_medians, OUT_PATH, 'normal_years_medians.parquet')
     print(f"Saved normalised monthly volume table, shape: {normal_years_medians.shape}")
     print(yearly_table)  
+
+    energy_efficiency = energy_efficiency_table(cat_a_only)
+    save_output(energy_efficiency, OUT_PATH, 'energy_efficiency.parquet')
+    print(f"Saved energy efficiency vs price and property type table, shape: {energy_efficiency.shape}")
+    print(energy_efficiency)  
 
 # STANDARD GUARD
 if __name__ == "__main__":
