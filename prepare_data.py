@@ -111,6 +111,8 @@ def energy_efficiency_table(cat_a_only):
 
         energy_efficiency_table = recent_exisiting.groupby(['property_subtype', 'energy_efficiency_rating_group'])['£/m2'].agg(['median', 'count'])
         energy_efficiency_table = energy_efficiency_table.reset_index().rename(columns= {'property_subtype':'property_type'})
+        energy_efficiency_table = energy_efficiency_table[~((energy_efficiency_table['property_type'] == 'Flat') 
+                                                          & (energy_efficiency_table['energy_efficiency_rating_group'] == 'F/G'))]
 
         return energy_efficiency_table
 
