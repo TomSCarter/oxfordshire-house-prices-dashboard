@@ -127,8 +127,8 @@ def historical_price_chart(df):
 # CHART 4
 
 def seasonality_chart(df):
-    fig = px.line(df, x='month', y='max', template='plotly_white')
-    fig.update_traces(hovertemplate=None, line_color = PALE_GREY)
+    fig = px.line(df, x='month', y='max', template=TEMPLATE)
+    fig.update_traces(hovertemplate=None, line_color = PALE_GREY, hoverinfo='skip')
 
     fig.add_trace(go.Scatter(x=df['month'], 
                             y=df['min'],
@@ -136,12 +136,13 @@ def seasonality_chart(df):
                             mode='lines',  
                             hovertemplate=None,
                             fill='tonexty',
-                            line_color=PALE_GREY))
+                            line_color=PALE_GREY,
+                            hoverinfo='skip'))
     fig.add_trace(go.Scatter(x=df['month'], 
                             y=df['median'],
                             name='median' ,
                             mode='lines',  
-                            hovertemplate=None,
+                            hovertemplate='<b>%{x}</b><br>%{y:,.0f} (average month =100)<extra></extra>',
                             line_color=VOLUME_LINE_COLOR))
     fig.update_yaxes(title='Sales vs average month<br>(100 = average)')
     fig.update_xaxes(title=None, tickmode="array",
@@ -157,7 +158,6 @@ def seasonality_chart(df):
                     margin_t=100,
                     plot_bgcolor='white',
                     title_x=0)
-    fig.update_traces(hovertemplate='<b>%{x}</b><br>%{y:,.0f} (average month =100)<extra></extra>')
     
     return fig
 
@@ -175,15 +175,14 @@ def energy_efficiency_chart(df):
               color_discrete_sequence=COLOR_PALETTE)
     fig.update_yaxes(title_text='Median price<br>per m² floor area', tickprefix='£', tickformat=',')
     fig.update_xaxes(title_text='Energy efficiency rating', showgrid=False)
-    fig.update_layout(title_text='Homes with highest energy efficiency linked to lowest price per  m²',
+    fig.update_layout(title_text='Homes with highest energy efficiency linked to lowest price per m²',
                     title_subtitle_text='Median price per m², standard market sales (cat. A), Oxfordshire, 2023–2025. New builds and records with expired EPC certificates excluded. Includes some records from before rating method changed in 2015. Excluded Flats rated F/G for too few records (18).',
                     title_font_size=TITLE_FONT_SIZE,
                     font_size=FONT_SIZE,
                     margin_t=100,
                     plot_bgcolor='white',
                     title_x=0)
-    fig.update_traces(marker_size=12,
-                    hovertemplate='<b>%{customdata[0]}, Rating: %{x}</b><br>Median £%{y:,.0f} per m²<br>Count: %{customdata[1]}<extra></extra>')
+    fig.update_traces(hovertemplate='<b>%{customdata[0]}, Rating: %{x}</b><br>Median £%{y:,.0f} per m²<br>Count: %{customdata[1]}<extra></extra>')
 
 
     return fig
