@@ -96,7 +96,8 @@ def energy_efficiency_table(cat_a_only):
         grouping = {"A": "A/B", "B": "A/B", "F": "F/G", "G": "F/G"}
         exisiting_builds['energy_efficiency_rating_group'] = exisiting_builds['current_energy_rating'].replace(grouping)
         exisiting_builds = exisiting_builds[exisiting_builds['EPC_expired'] == False]
-        energy_efficiency_table = exisiting_builds.groupby(['property_subtype', 'energy_efficiency_rating_group'])['£/m2'].median().reset_index()
+        energy_efficiency_table = exisiting_builds.groupby(['property_subtype', 'energy_efficiency_rating_group'])['£/m2'].median()
+        energy_efficiency_table = energy_efficiency_table.reset_index().rename(columns= {'property_subtype':'property_type'})
         return energy_efficiency_table
 
 # SAVE OUTPUT
