@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from charts import district_price_chart, historical_volume_chart, historical_price_chart, HIDE_BAR, seasonality_chart
+from charts import district_price_chart, historical_volume_chart, historical_price_chart, HIDE_BAR, seasonality_chart, energy_efficiency_chart
 
 st.set_page_config(page_title='Oxfordshire house prices dashboard', layout='wide')
 
@@ -12,6 +12,7 @@ price_district_table = load_table('data/aggregated/price_district_table.parquet'
 med_vol_table = load_table('data/aggregated/median_volume_table.parquet')
 yearly_table = load_table('data/aggregated/yearly_median_table.parquet')
 seasonality_table = load_table('data/aggregated/normal_years_medians.parquet')
+energy_efficiency_table = load_table('data/aggregated/energy_efficiency.parquet')
 
 st.title('Oxfordshire house prices dashboard')
 st.markdown("""An interactive dashboard of residential sales in Oxfordshire from 2015 to 2025, focused on sales volume and £ per m² floor area.\n\n\n\n
@@ -46,15 +47,11 @@ st.markdown("""**Recommendation**: There may be less demand over winter, giving 
 st.plotly_chart(seasonality_chart(seasonality_table), width='stretch', theme=None, config=HIDE_BAR)
 
 st.subheader(""" Do homes with poor energy efficiency sell at a discount (per m²)?""")
-st.markdown("""**Finding**:""")
-st.markdown("""**Recommendation**:""")
-
-st.subheader(""" Do new builds cost more per m²?""")
-st.markdown("""**Finding**:""")
-st.markdown("""**Recommendation**:""")
-
-
-
+st.markdown("""
+**Finding**: Homes with high (A/B) or low (F/G) energy efficiency sell for a lower price (per m²) than moderate efficiency (C-E). Detached homes are an exception where the least efficient homes share the highest price (E & F/G similar). This could be influenced by old inefficient homes located in expensive locations, efficient newer homes in cheaper locations, or buyers do not value efficiency beyond modest levels.
+""")
+st.markdown("""**Recommendation**: Prices show no premium for efficiency above D, any case for upgrades would need to be based on other factors (e.g. running costs, letting requirements).""")
+st.plotly_chart(energy_efficiency_chart(energy_efficiency_table), width='stretch', theme=None, config=HIDE_BAR)
 
 st.markdown("""Built by Tom Carter with Plotly and Streamlit.
 The data comes from my [Land Registry cleaning pipeline](https://github.com/TomSCarter/land-registry-cleaning-pipeline), which links HM Land Registry Price Paid Data to Energy Performance Certificates. 
@@ -68,13 +65,3 @@ That link adds floor area and energy rating to each sale, which makes measures s
 \nContains HM Land Registry data © Crown copyright and database right 2021. This data is licensed under the Open Government Licence v3.0.
 \nEnergy Performance of Buildings Data: England and Wales, Ministry of Housing, Communities and Local Government. Contains public sector information licensed under the Open Government Licence v3.0.
  """)
-
-    # - How does £ per sqm floor_area vary between districts? Where is space cheapest?
-    # - Do homes with poor energy efficiency sell at a discount (per m2)?
-    #     - Landlords have to meet a minimum energy rating to let, which may be raised
-    # - Do prices or sales volume vary throughout the year? When are they lowest/highest?
-    #     - Compare months within a year to avoid long term price rise trend
-    # - Do new builds cost more per m2?
-    # - What has been the overall price/volume trend since 2015?
-    #     - Did sales volumes or prices change when tax changes took place?
-    #         - Extra stamp duty changes (first in April 2016 for additional properties then increased)
