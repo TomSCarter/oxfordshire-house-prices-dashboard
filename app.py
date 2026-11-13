@@ -14,6 +14,7 @@ seasonality_table = load_table('data/aggregated/normal_years_medians.parquet')
 energy_efficiency_table = load_table('data/aggregated/energy_efficiency.parquet')
 
 st.title('Oxfordshire house prices dashboard')
+st.caption('Best viewed on a desktop or laptop')
 st.markdown("""An interactive dashboard of residential sales in Oxfordshire from 2015 to 2025 for property investors, focused on sales volume and £ per m² floor area.\n\n\n\n
 """)
 

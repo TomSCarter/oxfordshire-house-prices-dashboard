@@ -2,7 +2,7 @@
 
 An interactive dashboard of residential sales in Oxfordshire from 2015 to 2025, for property investors, built with Plotly and Streamlit.
 
-**Live dashboard:** [Oxfordshire house prices dashboard](https://oxfordshire-house-prices-dashboard.streamlit.app/)
+**Live dashboard:** [Oxfordshire house prices dashboard](https://oxfordshire-house-prices-dashboard.streamlit.app/) (best viewed on a desktop or laptop)
 
 Screenshot of the dashboard. The live version is interactive:
 

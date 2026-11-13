@@ -8,6 +8,8 @@ why it matters and roughly how big it is, so it can be picked up later.
   *Effort:* ~1h · *Source:* review (Claude), 12 Nov 2026
     - **Title:** See if energy efficiency ratings show a different correlation with price when separated by district (Oxford city may have more expensive inefficient houses)
   *Effort:* ~1h · *Source:* review (self), 12 Nov 2026
+      - **Title:** Optimise app.py for viewing on mobile (smaller fonts, move chart titles into streamlit text, legends horizontal below text etc)
+  *Effort:* ~3h · *Source:* review (self), 13 Nov 2026
 
 ## Ideas (lower priority)
 - **Title:** ...
