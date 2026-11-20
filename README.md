@@ -38,8 +38,9 @@ The dashboard is aimed at a property investor, and answers four questions:
 ## Further analysis: is there a new-build premium?
 
 - After accounting for floor area, property type, district and year of sale, new builds typically sell for slightly less than existing homes (price paid -0.5% for new builds vs existing, 95% CI -0.9% to -0.2%), a difference too small to matter in practice.
-- In the raw model, new builds sold for 8.8% more (when only accounting for whether a new build or not). This reflects the kind of properties the new builds are, differing in size, type, district and year of sale, in ways associated with higher prices.
-- Accounting for the energy efficiency rating resulted in a +4.4% premium on new build properties. This is likely to be misleading and a bad control, as the individual coefficients pointed the opposite way to what would be expected as in finding 4 above, and this could be explained by for example expensive inefficient period properties in town centre locations vs efficient new builds in out-of-town estates.
+- In the raw model, new builds sold for 8.8% more (before any adjustment). This reflects the kind of properties the new builds are, differing in size, type, district and year of sale, in ways associated with higher prices.
+- Accounting for the energy efficiency rating resulted in a +4.4% premium on new build properties. This is likely to be misleading and EPC rating a bad control, as being new largely causes high efficiency ratings. The individual coefficients pointed the opposite way to what would be expected (A/B −6%, F/G +5% compared with D, matching Finding 4), and this could be explained by for example expensive inefficient period properties in town centre locations vs efficient new builds in out-of-town estates.
+*Recommendation:* new builds should be judged against comparable homes, without an expectation of a higher price purely due to being new.
 
 [Notebook with new build premium regression](notebooks/new_build_premium_regression.ipynb)
 Requires statsmodels, see requirements_dev.txt
@@ -69,6 +70,7 @@ To rebuild the aggregated tables, run the [cleaning pipeline](https://github.com
     ├── charts.py            # chart functions
     ├── prepare_data.py      # builds the aggregated tables from the cleaned data
     ├── requirements.txt
+    ├── requirements_dev.txt # requirements for new build premium regression notebook (adds statsmodels)
     ├── .streamlit/config.toml
     ├── data/aggregated/     # small summary tables used by the app (tracked)
     ├── data/raw/            # cleaned sales data (not tracked)
