@@ -32,8 +32,17 @@ The dashboard is aimed at a property investor, and answers four questions:
 **3. Sales are lowest in winter.** January is the quietest month (about 73% of an average month) and June the busiest (about 118%), with the second half of the year above average. Prices show no reliable seasonal pattern.
 *Recommendation:* winter brings fewer competing buyers, though not lower prices.
 
-**4. The most efficient homes sell for the least per m².** Among existing homes, those rated A/B have the lowest median price per m² for every property type, roughly 8–15% below D-rated homes. Though this is just an association, building age and location are likely to factor in the trend.
+**4. The most efficient homes sell for the least per m².** Among existing homes, those rated A/B have the lowest median price per m² for every property type, roughly 8–15% below D-rated homes. Though this is just an association, building age and location are likely to factor in the trend. A regression controlling for size, type, district and year shows the same pattern (see below).
 *Recommendation:* sale prices show no premium for ratings above D, so any case for upgrades rests on running costs and letting requirements.
+
+## Further analysis: is there a new-build premium?
+
+- After accounting for floor area, property type, district and year of sale, new builds typically sell for slightly less than existing homes (price paid -0.5% for new builds vs existing, 95% CI -0.9% to -0.2%), a difference too small to matter in practice.
+- In the raw model, new builds sold for 8.8% more (when only accounting for whether a new build or not). This reflects the kind of properties the new builds are, differing in size, type, district and year of sale, in ways associated with higher prices.
+- Accounting for the energy efficiency rating resulted in a +4.4% premium on new build properties. This is likely to be misleading and a bad control, as the individual coefficients pointed the opposite way to what would be expected as in finding 4 above, and this could be explained by for example expensive inefficient period properties in town centre locations vs efficient new builds in out-of-town estates.
+
+[Notebook with new build premium regression](notebooks/new_build_premium_regression.ipynb)
+Requires statsmodels, see requirements_dev.txt
 
 ## Limitations
 
